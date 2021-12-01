@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { Route ,Switch} from 'react-router-dom';
+import './assests/style.css'
+import Mainarea from './Components/Mainarea';
+import PrivateRoute from './Components/PrivateRoute';
+import Signup from './pages/Signup';
+import Signin from './pages/Signin'
+import Modal from './Components/Modal'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <>
+    <Modal/>
+    <div>
+    <Switch>
+      <Route exact path="/signup" component={Signup} />
+      <Route exact path="/signin" component={Signin} />
+        {/* <Route eaxct path="/" component={Mainarea} > */}
+          <PrivateRoute>
+            <Mainarea/>
+          </PrivateRoute>
+    </Switch>
     </div>
+    </>
   );
 }
 
