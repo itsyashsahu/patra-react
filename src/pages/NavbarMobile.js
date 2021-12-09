@@ -4,7 +4,7 @@ import {NavLink} from 'react-router-dom';
 export default function NavbarMobile() {
     return (
         
-    <div> 
+    <div className="nav-icon-menu-mobile-wrapper" > 
         <ul className="nav-icon-menu-mobile">
             <li><NavLink exact to="/">
                 {/* <!-- dashboard svg  --> */}

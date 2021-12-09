@@ -13,10 +13,10 @@ export default function Navhome(props) {
     return (
     <div className="nav-home">
         <div className="logo-home">
-            PaTra
+            <Link to="/">PaTra</Link>
         </div>
         <ul className="nav-full-menu">
-            <li><Link to="#">About Us</Link></li>
+            <li><Link to="/aboutus">About Us</Link></li>
             <li><Link to= {`/${redirectpage}`} className="login-btn-Insignup" >{props.page}</Link></li>
         </ul>
     </div> 

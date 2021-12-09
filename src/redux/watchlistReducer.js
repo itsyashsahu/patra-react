@@ -16,12 +16,8 @@ export const watchlistReducer = createSlice({
     reducers:{
         setWatchlist: (state,action)=>{
             const payload = action.payload;
-            console.log("heeloo action",action);
-            
+            // console.log("heeloo action",action);
                 state.watchlistArr.push(payload)
-
-
-
         },
         setSearchStock: (state,action)=> {
 
@@ -35,9 +31,13 @@ export const watchlistReducer = createSlice({
         setShowOptions: (state,action)=>{
             state.showOptions = state.showOptions ? false : true;
             var data = action.payload;
-            state.showOptionsStock = {
-                stockName: data.stockName,
-                stockSymbol: data.stockSymbol
+            if(data){
+                state.showOptionsStock = {
+                    stockName: data.stockName,
+                    stockSymbol: data.stockSymbol,
+                    currPrice:data.currPrice,
+                    option:data.option
+                }
             }
 
         },
@@ -46,12 +46,21 @@ export const watchlistReducer = createSlice({
             console.log("taking from remove stockentry",stockSymbol);
             state.watchlistArr.splice( state.watchlistArr.findIndex(item => item.stockSymbol === stockSymbol), 1);
             
+        },
+        setTransOption:(state)=>{
+            const {option} = state.showOptionsStock;
+            if(option==='buy'){
+                state.showOptionsStock.option = 'sell';
+            }
+            else if(option === 'sell') {
+                state.showOptionsStock.option = 'buy';
+            }
         }
 
     }
 })
 
-export const {setWatchlist,setSearchStock,setShowOptions,removeStockEntry} = watchlistReducer.actions; 
+export const {setWatchlist,setSearchStock,setShowOptions,removeStockEntry,setTransOption} = watchlistReducer.actions; 
 
 export default watchlistReducer.reducer;
 

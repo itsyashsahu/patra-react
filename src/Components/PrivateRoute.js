@@ -29,7 +29,7 @@ const PrivateRoute = ({children, ...rest}) => {
     }
     return (
         <Route {...rest} 
-            render={()=> isAuth?(children):(<Redirect to={'/signup'} /> ) }
+            render={()=> isAuth?(children):(<Redirect to={'/home'} /> ) }
         />
     );
 }

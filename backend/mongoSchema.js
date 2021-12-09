@@ -162,7 +162,7 @@ db.createCollection("user", {
 
 
 
- db.runCommand({collMod:"user", 
+ db.runCommand({collMod:"users", 
  validator: {
    $jsonSchema: {
       bsonType: "object",
@@ -181,7 +181,7 @@ db.createCollection("user", {
             minimum:4,
             description: "cannot be less then 4 and is required"
          },
-         Gender: {
+         gender: {
             enum: [ "Male", "Female",null],
             description: "can only be one of the enum values and is required"
          },
@@ -204,7 +204,7 @@ db.createCollection("user", {
             }
          },
          dob:{
-             bsonType:"date",
+             bsonType:"string",
              description:"must be a date and is required "
          },
          phone:{
@@ -252,12 +252,11 @@ db.createCollection("user", {
             bsonType:"array",
             items:{
               bsonType:"object",
-              required:["stockSymbol","stockName","qty","buyPrice","date"],
+              required:["stockSymbol","stockName","qty","price"],
                 properties:{
                    stockSymbol:{
                       bsonType:"string",
                       description:"this is the symbol of the stock ",
-                      unique:true
                    },
                    stockName:{
                       bsonType:"string",
@@ -266,7 +265,7 @@ db.createCollection("user", {
                    qty:{
                       bsonType:"number", 
                    },
-                   buyPrice:{
+                   price:{
                       bsonType:"number", 
                    },
                    date:{
@@ -280,12 +279,8 @@ db.createCollection("user", {
             bsonType:"array",
             items:{
               bsonType:"object",
-              required:["stockSymbol","stockName","qty","transType","transPrice","date"],
+              required:["stockName","qty","transType","transPrice"],
                 properties:{
-                   stockSymbol:{
-                      bsonType:"string",
-                      description:"this is the symbol of the stock "
-                   },
                    stockName:{
                       bsonType:"string",
                       description:"this is the name of the stock "
@@ -299,10 +294,7 @@ db.createCollection("user", {
                    },
                    transPrice:{
                       bsonType:"number", 
-                   },
-                   date:{
-                      bsonType:"date"
-                   },
+                   }
                  }
             }
 
@@ -315,4 +307,112 @@ db.createCollection("user", {
 
 db.user.updateOne({},{ $push: { watchlists:{  "stockName":"asdlkfjasdf",
                                              "stockSymbol":876 } } } )
+                                
                                              
+db.users.findOne({"_id":ObjectId("61a8ca10e207b24fd4f1f650")})                                             
+
+db.users.findOne({"_id":ObjectId("61a8ca10e207b24fd4f1f650"), holdings:{ $elemMatch:{stockSymbol:"TATASTEEL.BSE"} } },)  
+db.users.findOne({"_id":ObjectId("61a8ca10e207b24fd4f1f650"), holdings:{ $elemMatch:{stockSymbol:"TATASTEEL.BSE"} } },)  
+db.users.findOne({"_id":ObjectId("61a8ca10e207b24fd4f1f650"), holdings:{ $elemMatch:{stockSymbol:"TATASTEEL.BSE"} } },)  
+
+db.users.updateOne(
+   {"_id":ObjectId("61ac41cd2a9df908b5f104b4"), holdings:{ $elemMatch:{stockSymbol:"KOTAKBANK.BSE"} } },
+   { $set : { "holdings.$.qty" : 10 } }
+   )  
+
+// this query works fine 
+db.users.updateOne({"_id":ObjectId("61a3a370b86c8020a577d916")},
+   {
+      $inc : { 
+         "fundsAvailable" : 1 
+      },
+      $addToSet : { "holdings" : {
+         "stockSymbol":"TATASTEEL.BSE",
+         "price":"773",
+         "qty":89,
+         "option":"buy"
+      },
+   }
+}) 
+
+db.users.updateOne({"_id":ObjectId("61a8ca10e207b24fd4f1f650")},{
+   $addToSet : { transHistory : {
+      "stockSymbol":"TATASTEEL.BSE",
+      "price":"773",
+      "qty":"3",
+      "option":"buy"
+      }
+   }
+}) 
+
+
+
+db.users.aggregate([
+   {
+      $match: { "_id":ObjectId("61ac032723176d376a96c00f"),"holdings.stockSymbol":"HDFCBANK.BSE"},
+   },
+   {
+      $project: { "_id":1,"holdings":1}
+   },
+   {
+      $unwind:"$holdings"
+   },
+   {
+      $match: { "_id":ObjectId("61ac032723176d376a96c00f"),"holdings.stockSymbol":"HDFCBANK.BSE"},
+   },
+   { $replaceWith: {
+      $setField: {
+         field: "holdings.qty",
+         input: ObjectId("61ac032723176d376a96c00f"),
+         value: 100
+         } 
+      } 
+   }
+]).pretty()
+
+
+db.users.aggregate([
+   {
+      $match: { "_id":ObjectId("61a8ca10e207b24fd4f1f650"),"holdings.stockSymbol":"HDFCBANK.BSE"},
+   },
+   {
+      $addToSet : { holdings : {
+         "stockSymbol":"TATASTEEL.BSE",
+         "price":"773",
+         "qty":89,
+         "option":"buy"
+         }
+      }
+   },
+   {
+      $set : { "fundsAvailable" : 999 }
+   }
+   
+]).pretty()
+
+
+// { $set : { "holdings.$" : { $inc: { "qty": -10} } } }
+
+
+db.users.updateOne(
+   {"_id":ObjectId("61ac032723176d376a96c00f")},
+   [{
+      $cond: {
+       if: {
+   
+           $eq: ["holdings.stockSymbol","HDFCBANK.BSE"]
+   
+       },
+       then: {
+           $set: {
+               "active": true
+           }
+       },
+       else: {
+           $set: {
+               "active": false
+           }
+       }
+      }
+   }]
+)

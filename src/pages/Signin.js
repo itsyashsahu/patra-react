@@ -34,9 +34,10 @@ export default function Signup() {
         password: '',
         agreeTnc:''
     });
+
     
     const { email, password } = inputs;
-
+    // console.log(inputs);
     function handleChange(e) {
         const { name, value } = e.target;
         setInputs(inputs => ({ ...inputs, [name]: value }));
@@ -59,8 +60,9 @@ export default function Signup() {
             // console.log(res);
 
             if(res.status===201){
-                if(inputs.agreeTnc){ //this gets called if the remember me id checked
-                    console.log(inputs.agreeTnc);
+                if(inputs.agreeTnc){ 
+                    //this gets called if the remember me id checked
+                    // console.log(inputs.agreeTnc);
                     sessionStorage.setItem("isAuth","true");
                 }
                 // console.log(res.data.token);
@@ -72,7 +74,7 @@ export default function Signup() {
                 const decoded = jwtDecode(token);
                 dispatch( setCurrentUser(decoded) );
 
-                // console.log(decoded);
+                console.log(decoded);
                 // dispatch(setCurrentUser(decoded) );
                 if(decoded.userId){
                     // <Redirect to="/dashboard" /> 
@@ -148,18 +150,18 @@ export default function Signup() {
                 </div>
                 {
                    displayFlex?<div className= "wrong-credentials" >
-                                <i class="ri-error-warning-line"></i>
+                                <i className="ri-error-warning-line"></i>
                                     You Have Entered Wrong credentials
                                 </div>:""
                 }
                 {
                    displayUserNotFound?<div className= "wrong-credentials" >
-                                <i class="ri-error-warning-line"></i>
+                                <i className="ri-error-warning-line"></i>
                                     This email does not belong to any account
                                 </div>:""
                 }
                 {/* <div className={`wrong-credentials ${displayFlex}`} >
-                <i class="ri-error-warning-line"></i>
+                <i className="ri-error-warning-line"></i>
                     You Have Entered Wrong credentials
                 </div> */}
                 <div className="form-credentials signup-submit ">

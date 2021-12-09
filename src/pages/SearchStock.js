@@ -91,7 +91,6 @@ export default function SearchStock() {
 
     const addStock = async (stockSymbol,stockName) =>{
         addStockData = { 
-            userId,
             stockName,
             stockSymbol
         }
