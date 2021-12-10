@@ -14,34 +14,21 @@ export const holdingReducer = createSlice({
     initialState,
     reducers:{
         setHolding:(state,action)=>{
-            const payload = action.payload;
-            state.holdingArr.push(payload)
-
+            state.holdingArr.push(action.payload)
         },
         updateHolding:(state,action)=>{
             const payload = action.payload;
-            // console.log('hellalsdkfjaslk',payload)
-            
+
             // find the stock 
             var stockIndex;
-            // console.log("mila kya index ", stockIndex)
             state.holdingArr.find( (stock,index)=>{
-                // console.log(stock.stockSymbol , payload.stockSymbol)
                 if(stock.stockSymbol===payload.stockSymbol){
                     stockIndex = index
-                    // console.log("mila gaya index ", stockIndex)
                     return stock
                 }else{
                 }
             })
             
-            
-            // console.log(stockIndex,payload.boughtQty,stockIndex===null,(stockIndex !=0) ,!(stockIndex))
-
-            // if( (stockIndex>0) || !(stockIndex==0) ){
-
-            // below one this contion is failing when there is only one or when the element with index 0 is clicked 
-            // if( !(stockIndex) && (stockIndex !=0) ) {
             if( (stockIndex >=0)) {
 
                 state.holdingArr.find( (stock,index)=>{
@@ -68,19 +55,6 @@ export const holdingReducer = createSlice({
                 console.log("this is when it is undefined ")
                 
             }
-            // else {
-
-            //     state.holdingArr.find( (stock,index)=>{
-
-            //         if(stock.stockSymbol===payload.stockSymbol){
-            //             stock.price = ( ( (stock.price*stock.qty)+(payload.boughtQty*payload.buyPrice) ) / ((payload.boughtQty) + (+stock.qty)) )
-    
-            //             stock.qty = ((payload.boughtQty) + (+stock.qty) );
-            //             return stock
-            //         }
-    
-            //     })
-            // }
 
             // updating the quickdashboard details 
             state.investedAmount= 0 ;
@@ -106,8 +80,6 @@ export const holdingReducer = createSlice({
         },
         calculateTotal:(state,action)=>{
             var resFinal = action.payload;
-            // console.log("this is invested ant outside",state.investedAmount,action.payload)
-            // calculating the ttlinvested amount 
             
             var stockInvestedAmount = ( ( resFinal.close * (+resFinal.qty) ))
             state.investedAmount = state.investedAmount +  stockInvestedAmount;
@@ -120,12 +92,7 @@ export const holdingReducer = createSlice({
             // calculating current value 
             var stockCurrValue = ( resFinal.close*(+resFinal.qty) )
             state.currentValue = Math.round( ( state.currentValue + stockCurrValue) * 100) / 100;
-            // state.holdingArr.map( function (sname,index){
-            //     console.log("this is invested ant before",state.investedAmount)
-            //     state.investedAmount = state.investedAmount +  (sname.qty*sname.price);
-            //     console.log("this is invested ant",state.investedAmount)
-            //     return sname;
-            // })
+            
         },
         updateSoldStock:(state,action)=>{
             // console.log(action.payload)

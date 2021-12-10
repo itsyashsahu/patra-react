@@ -12,30 +12,22 @@ import axios from 'axios'
 
 
 export const getPriceData = async (symbol) => {
-    // if(keyword.length>1){
-        // var symbol = "IBM";
+
         let url1 = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=ZTR22AB0MG26X48D`;
         let results = await fetch(url1);
         results = await results.json();
-        // console.log(results)
+
         var prices;
         if(results.Note){
             console.log("we exceded the limit");
-            // return(results.Note)
         }else{
-
-            // console.log(results["Meta Data"]["2. Symbol"]);
             const obj = results["Time Series (Daily)"];
-            //accessing the first property or element of our object data
-            // console.log("this is the obj",obj[Object.keys(obj)[0]]);
             const dayData = obj[Object.keys(obj)[0]];
 
-            // const closePrice = dayData["4. close"];
             const closePrice = Math.round( ( dayData["4. close"]) * 100) / 100;
 
             const openPrice = dayData["1. open"];
             const change = Math.round( (closePrice-openPrice) * 100) / 100 ;
-            // const change = closePrice-openPrice
             const stockSymbol = results["Meta Data"]["2. Symbol"];
             var stockEndedIn;
             if(change>0){
@@ -43,11 +35,7 @@ export const getPriceData = async (symbol) => {
             }else{
                 stockEndedIn = 'red'
             }
-            // data = results.bestMatches; 
-            // setData(rawdata);
-            // }
             prices= { "stockSymbol":stockSymbol, "close": closePrice, "change": change,stockEndedIn}
-            // console.log('get price data response',prices);
         }
         return prices
 }
@@ -78,21 +66,18 @@ export default function Modal() {
         })
     },[isOrderExecuted])
 
+    const dispatch = useDispatch();
 
     const user = useSelector( (state)=> state.user.user );
-    const [valueCheckbox , setValueCheckbox] = useState(false);
-    const [ isFieldsSet, setIsFieldsSet ] = useState(false);
-    // const value = false;
-    const dispatch = useDispatch();
-    // const showOptions = useSelector( (state)=> state.watchlist.showOptions )
     const stockData = useSelector( (state)=> state.watchlist.showOptionsStock )
     const holdings = useSelector( (state)=> state.holding.holdingArr )
-    // console.log(holdings);
+
+    const [valueCheckbox , setValueCheckbox] = useState(false);
+    const [ isFieldsSet, setIsFieldsSet ] = useState(false);
     const { option ,stockName, stockSymbol,currPrice } = stockData;
-    // console.log("hellowasdlkfj",stockData,currPrice);
+
     const stock = holdings.find( (stock,index)=>{
         if(stock.stockSymbol===stockSymbol){
-            // console.log(stockSymbol)
             return stock
         }
     })
@@ -153,7 +138,7 @@ export default function Modal() {
                 boughtQty:(+qty),
                 buyPrice:currPrice
             }
-            dispatch( updateHolding(updateData));
+            dispatch( updateHolding(updateData) );
             
             // await axios.post('http://localhost:4000/holding/trans', finalInput)
             await axios.post('http://localhost:4000/holding/trans', finalInput)
@@ -177,7 +162,6 @@ export default function Modal() {
 
         }else if ( ( option ==='sell' && qty <= ( (stock)?stock.qty:0 ) && qty ) ){
             const finalInput = {...inputs,price: currPrice, option,stockSymbol,stockName}
-            console.log("sold final inputs ",finalInput)
             axios.post('http://localhost:4000/holding/trans', finalInput)
             .then((res)=>{
                 console.log(res)
@@ -189,8 +173,6 @@ export default function Modal() {
 
                 }
                 setTimeout(turnModalOff, 1000);
-                // turnModalOff()
-
             })
             .catch((err)=>{
                 console.log(err)
@@ -209,20 +191,16 @@ export default function Modal() {
                     "sellPrice":currPrice,
                     qty
                 }
-                console.log("update reports data ",updateReportData,stock)
                 dispatch(setReport(updateReportData))
             }
 
 
         }else{
-            
             // when all the fields are not set 
             setIsFieldsSet(true)
-            console.log("baand baj gyi ")
         }
 
     }
-    // if(showOptions){
 
     if(!isOrderExecuted){
         return(
@@ -284,7 +262,8 @@ export default function Modal() {
                                 </svg>
                                 {/* NOTE I have Disaabled the price option */}
                                 <input className="numberFont" type="Number" placeholder={`Price : ${currPrice}`} name="price"
-                                    onChange={handleChange} disabled /></span>  
+                                    onChange={handleChange} disabled />
+                            </span>  
                             <span className="ordertypeLimitMarket">
 
                                 <span><input type="radio" name="ordertypeLimitMarket"
